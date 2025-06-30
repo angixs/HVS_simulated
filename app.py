@@ -113,9 +113,3 @@ L_proxy = 0.68990272 * LMS_cal[:, :, 0] + 0.34832189 * LMS_cal[:, :, 1]
 L_proxy_glare = 0.68990272 * LMS_glared[:, :, 0] + 0.34832189 * LMS_glared[:, :, 1]
 L_proxy_rsr = 0.68990272 * LMS_fused[:, :, 0] + 0.34832189 * LMS_fused[:, :, 1]
 utils.compute_all_contrast_metrics(L_proxy, L_proxy_glare, L_proxy_rsr)
-
-#utils.plot_single(RGB_image, RGB_glared, RGB_rsr)
-#utils.printMatrix()
-
-# #utils.plot_luminance_distributions(L_proxy, L_proxy_glare, L_proxy_rsr)
-
