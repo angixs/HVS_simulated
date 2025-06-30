@@ -5,7 +5,7 @@ from scipy.interpolate import PchipInterpolator
 import tifffile as tiff
 import utils
 
-# === FASE 1: Recupero immagine Iperspettrale -> Conversione in LMS ===
+# === STEP 1: Hyperspectral image retrieval -> Conversion to LMS ===
 tiff_path = "img1.tiff"
 
 hsi_data = tiff.imread(tiff_path).astype(np.float32) / 65536.0
@@ -33,32 +33,28 @@ S_interp = PchipInterpolator(wave_cmf, S_cmf)(wavelengths)
 
 LMS_image = utils.convert_to_LMS(hsi_data, wavelengths, L_interp, M_interp, S_interp)
 
-# === FASE 2: Calibrazione luminanza ===
+#=== STEP 2: Luminance calibration ===
 LMS_normalized = utils.normalize_LMS(LMS_image, target_max=1000)
 LMS_cal = utils.calibration(LMS_normalized, 1000)
 
 L_proxy = 0.68990272 * LMS_cal[:, :, 0] + 0.34832189 * LMS_cal[:, :, 1]
 
-best_gamma = 1.11 #gamma ricavata dall'img con Color Checker, testato dal file calib_lux
+best_gamma = 1.11
 
-# applica gamma stimata all'immagine LMS
 LMS_cal[:, :, 0] = LMS_cal[:, :, 0] ** best_gamma
 LMS_cal[:, :, 1] = LMS_cal[:, :, 1] ** best_gamma
 LMS_cal[:, :, 2] = LMS_cal[:, :, 2] ** best_gamma
-
-# calcola luminanza post-correzione gamma
 L_proxy_corr = 0.68990272 * LMS_cal[:, :, 0] + 0.34832189 * LMS_cal[:, :, 1]
 
 LMS_gamma = LMS_cal
 
-# conversione LMS → RGB
 RGB_image = utils.convert_LMS_to_RGB(LMS_gamma)
 
-# === FASE 3: Applicazione del Veiling Glare ===
-a = 50  # età osservatore
-p = 1   # pigmentazione 
-fov = 4 # angolo
-res = 1 # risoluzione
+# === STEP 3: Application of Veiling Glare ===
+a = 50  # age
+p = 1   # pigmentation 
+fov = 4 # angle
+res = 1 # resolution
 
 angle_range = np.arange(-fov/2, fov/2 + res, res)
 X, Y = np.meshgrid(angle_range, angle_range)
@@ -71,14 +67,14 @@ psf_compressed /= psf_compressed.sum()
 LMS_glared = utils.apply_glare_LMS(LMS_gamma, psf_compressed)
 RGB_glared = utils.convert_LMS_to_RGB(LMS_glared)
 
-# === FASE 4: Calcolo RSR - Random Spray Retinex ===
+# === STEP 4: RSR Calculation - Random Spray Retinex ===
 radii = [ 30, 150, 300, 600]
-# Caso 1: img con soggetti ripresi lontani 
+# Case 1: img with subjects filmed far away. 
 K = 5
 N = 15
 alpha = 0.5
 
-# Caso 2:  img con soggetti ripresi vicini
+# Case 2: img with subjects shot close together.
 #K = 5
 #N = 18
 #alpha = 0.2
@@ -89,7 +85,7 @@ LMS_fused = LMS_glared * np.exp(alpha * LMS_rsr)
 
 
 
-# === FASE 5: Conversione LMS_rsr → RGB ===
+# === STEP 5: LMS_rsr → RGB conversion ===
 RGB_rsr = utils.convert_LMS_to_RGB(LMS_fused)
 
 fig, axes = plt.subplots(1, 3, figsize=(24, 6))
@@ -108,7 +104,7 @@ axes[2].axis('off')
 plt.tight_layout()
 plt.show()
 
-# === FASE 6: Valutazione del contrasto ===
+# === STEP 6: Contrast assessment ===
 L_proxy = 0.68990272 * LMS_cal[:, :, 0] + 0.34832189 * LMS_cal[:, :, 1]
 L_proxy_glare = 0.68990272 * LMS_glared[:, :, 0] + 0.34832189 * LMS_glared[:, :, 1]
 L_proxy_rsr = 0.68990272 * LMS_fused[:, :, 0] + 0.34832189 * LMS_fused[:, :, 1]
