@@ -4,6 +4,7 @@ This project implements a pipeline to simulate a computational model of the huma
 A sequence of biologically plausible transformations was used to convert the image from raw spectral data to a visual representation in the sRGB color space.
 
 ---
+![Finale](https://github.com/user-attachments/assets/fe19743f-3522-4750-b3cd-990b90598a3d)
 
 ## Dataset
 
