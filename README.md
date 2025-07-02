@@ -1,10 +1,11 @@
-# Computational Simulation of the Human Visual System.
+![output](https://github.com/user-attachments/assets/95b08a32-0646-4dd0-bb00-681c55ac65bd)# Computational Simulation of the Human Visual System.
 
 This project implements a pipeline to simulate a computational model of the human visual system from hyperspectral images.  
 A sequence of biologically plausible transformations was used to convert the image from raw spectral data to a visual representation in the sRGB color space.
+![output](https://github.com/user-attachments/assets/ca953aa2-4f33-479d-b02a-72d6e907ab48)
 
 ---
-![Finale](https://github.com/user-attachments/assets/fe19743f-3522-4750-b3cd-990b90598a3d)
+
 
 ## Dataset
 
