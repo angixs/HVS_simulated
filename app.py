@@ -90,7 +90,7 @@ RGB_rsr = utils.convert_LMS_to_RGB(LMS_fused)
 
 fig, axes = plt.subplots(1, 3, figsize=(24, 6))
 axes[0].imshow(RGB_image)
-axes[0].set_title('Originale LMS')
+axes[0].set_title('Original LMS')
 axes[0].axis('off')
 
 axes[1].imshow(RGB_glared)
@@ -98,7 +98,7 @@ axes[1].set_title('Post Glare')
 axes[1].axis('off')
 
 axes[2].imshow(RGB_rsr)
-axes[2].set_title('Multiscala RSR')
+axes[2].set_title('MRSR')
 axes[2].axis('off')
 
 plt.tight_layout()
